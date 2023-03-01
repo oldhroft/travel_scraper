@@ -1,11 +1,21 @@
-countries:
-  uae: 68
-  thailand: 87
-  egypt: 29
 options:
  - "window-size=1920,1080"
  - "--headless"
 debug: true
-s3_options:
-  Bucket: parsing
-  base_dir: parsing_data
+parsers:
+  travelata:
+    s3_options:
+      Bucket: parsing
+      base_dir: parsing_data/travelata
+    parsing_params:
+      night_interval: 0
+    parsing:
+      country_code:
+        - 68
+        - 87
+        - 29
+      nights:
+        - 5
+        - 6
+        - 7
+        - 8

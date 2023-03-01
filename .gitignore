@@ -1,7 +1,6 @@
 *.json
 *.html
 *.ipynb
-urls.txt
 *.pyc
 __pycache__
 .DS_Store
@@ -10,3 +9,4 @@ airflow*
 logs
 webserver_config.py
 secrets.sh
+*.txt

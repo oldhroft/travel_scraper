@@ -7,7 +7,7 @@ import time
 import datetime
 
 from travel_scraper.utils import hover_and_right_click
-from travel_scraper.utils import add_meta
+from travel_scraper.utils import add_meta, create_grid
 
 import logging
 
@@ -17,11 +17,14 @@ logging.basicConfig(
 
 logger = logging.getLogger()
 
-TEMPLATE_STRING = "https://travelata.ru/tury#?fromCity=2"\
-    "&dateFrom={date_from}&dateTo={date_to}"\
-    "&nightFrom={night_from}&nightTo={night_to}"\
-    "&adults=2&hotelClass=all&meal=all&sort=priceUp"\
+TEMPLATE_STRING = (
+    "https://travelata.ru/tury#?fromCity=2"
+    "&dateFrom={date_from}&dateTo={date_to}"
+    "&nightFrom={night_from}&nightTo={night_to}"
+    "&adults=2&hotelClass=all&meal=all&sort=priceUp"
     "&f_good=true&toCountries={country}"
+)
+
 
 @add_meta("https://travelata.ru/")
 def parse_with_params(
@@ -32,7 +35,6 @@ def parse_with_params(
     night_to: int,
     debug=False,
 ) -> None:
-    
     # TODO unify for different parsers
     stat = {}
 
@@ -46,8 +48,11 @@ def parse_with_params(
     stat["date_to"] = date_to
 
     url = TEMPLATE_STRING.format(
-        country=country_code, date_from=date_from, date_to=date_to,
-        night_from=night_from, night_to=night_to
+        country=country_code,
+        date_from=date_from,
+        date_to=date_to,
+        night_from=night_from,
+        night_to=night_to,
     )
     stat["search_url"] = url
     logger.info(f"Travelling to {url}")
@@ -110,11 +115,13 @@ def parse_with_params(
     time.sleep(4)
     logger.info("Trying to get links")
 
-    elements = browser.find_elements(By.CSS_SELECTOR, "a.serpHotelCard__title.goToHotel")
+    elements = browser.find_elements(
+        By.CSS_SELECTOR, "a.serpHotelCard__title.goToHotel"
+    )
 
     for element in elements:
         hover_and_right_click(browser, element)
-        time.sleep(.2)
+        time.sleep(0.2)
         href = element.get_attribute("href")
         logger.info(f"extracting url {href}")
 
@@ -122,3 +129,22 @@ def parse_with_params(
     content = browser.page_source
 
     return content, stat
+
+
+def grid_option(grid_config: dict, night_interval: int = 0) -> list:
+    
+    if night_interval < 0:
+        raise ValueError("Night interval should be > 0")
+
+    grid = create_grid(grid_config)
+
+    return list(
+        map(
+            lambda x: {
+                "country_code": x["country_code"],
+                "night_from": x["nights"],
+                "night_to": x["nights"] + night_interval,
+            },
+            grid,
+        )
+    )

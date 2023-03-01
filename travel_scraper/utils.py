@@ -90,3 +90,10 @@ def dump_result_and_meta_s3(Bucket: str, base_dir: str, result: str, meta: dict)
     dirname = os.path.join(base_dir, parsing_id)
     load_to_s3(meta, Key=os.path.join(dirname, "meta.json"), Bucket=Bucket, is_json=True)
     load_to_s3(result, Key=os.path.join(dirname, "content.json"), Bucket=Bucket)
+
+
+from itertools import product
+
+def create_grid(params: dict) -> map:
+    return map(lambda x: dict(zip(params.keys(), x)), 
+               product(*params.values()))
