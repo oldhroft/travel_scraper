@@ -97,3 +97,23 @@ from itertools import product
 def create_grid(params: dict) -> map:
     return map(lambda x: dict(zip(params.keys(), x)), 
                product(*params.values()))
+
+import sys
+import logging
+
+def config_logger(logger, name: str, folder: str) -> None:
+
+    handler = logging.StreamHandler(sys.stdout)
+
+    log_folder = os.path.join(folder, f'logs_{name}')
+    safe_mkdir(log_folder)
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    filename = os.path.join(log_folder, f'log_{now}.log')
+    file_handler = logging.FileHandler(filename, mode='w', encoding='utf-8')
+    
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.addHandler(file_handler)
+    logger.setLevel(logging.INFO)

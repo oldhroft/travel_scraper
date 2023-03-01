@@ -7,10 +7,10 @@ import click
 
 import logging
 
-from travel_scraper.utils import dump_result_and_meta, dump_result_and_meta_s3
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+from travel_scraper.utils import (
+    dump_result_and_meta,
+    dump_result_and_meta_s3,
+    config_logger,
 )
 
 logger = logging.getLogger()
@@ -31,6 +31,9 @@ def get_method(module_name, func_name):
 def run_selenium(config_path: str, parser: str):
     with open(config_path, "r", encoding="utf-8") as file:
         config = yaml.safe_load(file)
+
+    config_logger(logger, parser, config["log_folder"])
+
     options = Options()
     for option in config["options"]:
         options.add_argument(option)

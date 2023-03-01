@@ -11,10 +11,6 @@ from travel_scraper.utils import add_meta, create_grid
 
 import logging
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-
 logger = logging.getLogger()
 
 TEMPLATE_STRING = (
