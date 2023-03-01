@@ -5,3 +5,7 @@ countries:
 options:
  - "window-size=1920,1080"
  - "--headless"
+debug: true
+s3_options:
+  Bucket: parsing
+  base_dir: parsing_data

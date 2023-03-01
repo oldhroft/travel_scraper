@@ -8,7 +8,7 @@ import click
 import logging
 
 from travel_scraper.travelata import parse_with_params
-from travel_scraper.utils import dump_result_and_meta
+from travel_scraper.utils import dump_result_and_meta, dump_result_and_meta_s3
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -32,8 +32,16 @@ def run_selenium(config_path: str, basedir: str):
 
     codes = list(config["countries"].values())
 
+    debug_option = config["debug"]
+
     for code in codes:
         result, meta = parse_with_params(
-            browser, country_code=code, night_from=7, night_to=7, debug=True)
-        dump_result_and_meta(basedir, result, meta)
+            browser, country_code=code, night_from=7, night_to=7, debug=debug_option)
+        
+        dump_result_and_meta_s3(
+            Bucket=config["s3_options"]["Bucket"],
+            base_dir=config["s3_options"]["base_dir"],
+            result=result,
+            meta=meta,
+        )
         

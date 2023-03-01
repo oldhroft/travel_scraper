@@ -1,6 +1,5 @@
 *.json
 *.html
-.python-version
 *.ipynb
 urls.txt
 *.pyc

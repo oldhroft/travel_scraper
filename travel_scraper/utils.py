@@ -15,9 +15,9 @@ def add_meta(website: str, time_fmt: str = "%Y-%m-%dT%H:%M:%SZ") -> Callable:
         @wraps(fn)
         def somedec_inner(*args, **kwargs):
             meta = {}
-            meta["parsing_datetime"] = datetime.datetime.now().strftime(time_fmt)
+            meta["parsing_started"] = datetime.datetime.now().strftime(time_fmt)
             result, stat = fn(*args, **kwargs)
-            stat["parsing_ended"] = datetime.datetime.now().strftime(time_fmt)
+            meta["parsing_ended"] = datetime.datetime.now().strftime(time_fmt)
             meta["stat"] = stat
             meta["website"] = website
             meta["parsing_id"] = str(uuid.uuid4())
@@ -55,3 +55,38 @@ def dump_result_and_meta(base_dir: str, result: str, meta: dict):
     with open(os.path.join(dirname, "content.html"), "w", encoding="utf-8") as file:
         file.write(result)
 
+import boto3
+from typing import Union
+
+def load_to_s3(data: Union[str, dict, list], Key, Bucket, is_json=False):
+    boto_session = boto3.session.Session(
+        aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
+        aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"]
+    )
+
+    s3 = boto_session.client(
+        service_name='s3',
+        endpoint_url=os.environ["AWS_ENDPOITNT_URL"],
+        region_name=os.environ["AWS_REGION_NAME"]
+    )
+    
+    if isinstance(data, list)  or isinstance(data, dict):
+        if is_json:
+            data = json.dumps(data)
+        else:
+            raise ValueError("You should explicitly specify is_json option")
+    elif isinstance(data, str):
+        pass
+    else:
+        raise ValueError("data should be str, list or dict")
+    s3.put_object(
+        Body=data,
+        Bucket=Bucket,
+        Key=Key
+    )
+
+def dump_result_and_meta_s3(Bucket: str, base_dir: str, result: str, meta: dict):
+    parsing_id = meta["parsing_id"]
+    dirname = os.path.join(base_dir, parsing_id)
+    load_to_s3(meta, Key=os.path.join(dirname, "meta.json"), Bucket=Bucket, is_json=True)
+    load_to_s3(result, Key=os.path.join(dirname, "content.json"), Bucket=Bucket)
