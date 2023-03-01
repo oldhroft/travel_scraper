@@ -1,0 +1,7 @@
+countries:
+  uae: 68
+  thailand: 87
+  egypt: 29
+options:
+ - "window-size=1920,1080"
+ - "--headless"

@@ -1,0 +1,13 @@
+*.json
+*.html
+.python-version
+*.ipynb
+urls.txt
+*.pyc
+__pycache__
+.DS_Store
+*.xlsx
+airflow*
+logs
+webserver_config.py
+secrets.sh
