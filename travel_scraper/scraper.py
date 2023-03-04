@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 import yaml
 import os
 import click
+import uuid
 
 import logging
 
@@ -34,6 +35,10 @@ def run_selenium(config_path: str, parser: str):
 
     config_logger(logger, parser, config["log_folder"])
 
+    global_uuid = str(uuid.uuid4())
+
+    logger.info(f"Starting operation with global uuid {global_uuid}")
+
     options = Options()
     for option in config["options"]:
         options.add_argument(option)
@@ -50,10 +55,14 @@ def run_selenium(config_path: str, parser: str):
 
     for param in grid_fn(parser_config["parsing"], **parser_config["parsing_params"]):
         result, meta = parse_func(browser, debug=debug_option, **param)
+        meta["global_uuid"] = global_uuid
 
+        logger.info("Dumping to s3")
         dump_result_and_meta_s3(
             Bucket=parser_config["s3_options"]["Bucket"],
             base_dir=parser_config["s3_options"]["base_dir"],
             result=result,
             meta=meta,
         )
+
+    logger.info("End!")

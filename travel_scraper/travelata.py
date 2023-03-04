@@ -29,7 +29,9 @@ def parse_with_params(
     country_code: str,
     night_from: int,
     night_to: int,
-    debug=False,
+    debug: bool = False,
+    sleep_between_scroll : int = 3,
+    sleep_between_click: float = 0.2
 ) -> None:
     # TODO unify for different parsers
     stat = {}
@@ -88,11 +90,11 @@ def parse_with_params(
         browser.execute_script(
             f"window.scrollTo(0, document.body.scrollHeight - {delta});"
         )
-        time.sleep(3)
+        time.sleep(sleep_between_scroll)
         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         new_height = browser.execute_script("return document.body.scrollHeight")
         logger.info(f"New height is {new_height}")
-        time.sleep(3)
+        time.sleep(sleep_between_scroll)
         if new_height == old_height:
             if second_chance:
                 old_height = new_height
@@ -117,7 +119,7 @@ def parse_with_params(
 
     for element in elements:
         hover_and_right_click(browser, element)
-        time.sleep(0.2)
+        time.sleep(sleep_between_click)
         href = element.get_attribute("href")
         logger.info(f"extracting url {href}")
 
@@ -128,7 +130,6 @@ def parse_with_params(
 
 
 def grid_option(grid_config: dict, night_interval: int = 0) -> list:
-    
     if night_interval < 0:
         raise ValueError("Night interval should be > 0")
 
