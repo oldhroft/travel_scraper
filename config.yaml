@@ -31,7 +31,7 @@ parsers:
   teztour:
     s3_options:
       Bucket: parsing
-      base_dir: parsing_data/leveltravel
+      base_dir: parsing_data/teztour
     parsing_params:
       night_interval: 0
     parsing:

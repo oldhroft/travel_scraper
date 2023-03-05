@@ -58,15 +58,15 @@ def run_selenium(config_path: str, parser: str):
         meta["global_id"] = global_uuid
 
         logger.info("Dumping to s3")
-        # dump_result_and_meta_s3(
-        #     Bucket=parser_config["s3_options"]["Bucket"],
-        #     base_dir=parser_config["s3_options"]["base_dir"],
-        #     result=result,
-        #     meta=meta,
-        # )
-
-        dump_result_and_meta(
-            "result", result, meta
+        dump_result_and_meta_s3(
+            Bucket=parser_config["s3_options"]["Bucket"],
+            base_dir=parser_config["s3_options"]["base_dir"],
+            result=result,
+            meta=meta,
         )
+
+        # dump_result_and_meta(
+        #     "result", result, meta
+        # )
 
     logger.info("End!")
