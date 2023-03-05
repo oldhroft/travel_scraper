@@ -144,3 +144,42 @@ def config_logger(logger, name: str, folder: str) -> None:
     logger.addHandler(handler)
     logger.addHandler(file_handler)
     logger.setLevel(logging.INFO)
+
+import time
+
+def infinite_scroll(browser, sleep_between_scroll, delta=0.25):
+
+    logger.info("Scrolling")
+    old_height = 0
+    delta = delta * browser.execute_script("return document.body.scrollHeight")
+    logger.info(f"delta = {delta}")
+    second_chance = True
+    while True:
+        browser.execute_script(
+            f"window.scrollTo(0, document.body.scrollHeight - {delta});"
+        )
+        time.sleep(sleep_between_scroll)
+        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        new_height = browser.execute_script("return document.body.scrollHeight")
+        logger.info(f"New height is {new_height}")
+        time.sleep(sleep_between_scroll)
+        if new_height == old_height:
+            if second_chance:
+                old_height = new_height
+                browser.execute_script(
+                    f"window.scrollTo(0, document.body.scrollHeight - {delta});"
+                )
+                logger.info("Second chance")
+                second_chance = False
+                time.sleep(6)
+            else:
+                logger.info("Scrolling finished!")
+                break
+        else:
+            old_height = new_height
+
+def scroll_bottom(browser: webdriver.Chrome):
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+def return_height(browser: webdriver.Chrome):
+    return browser.execute_script("return document.body.scrollHeight")
