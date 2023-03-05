@@ -12,6 +12,10 @@ from functools import wraps
 import datetime
 import uuid
 
+import logging
+
+logger = logging.getLogger()
+
 
 def add_meta(website: str, time_fmt: str = "%Y-%m-%dT%H:%M:%SZ") -> Callable:
     def dec_outer(fn):
@@ -19,7 +23,16 @@ def add_meta(website: str, time_fmt: str = "%Y-%m-%dT%H:%M:%SZ") -> Callable:
         def somedec_inner(*args, **kwargs):
             meta = {}
             meta["parsing_started"] = datetime.datetime.now().strftime(time_fmt)
-            result, stat = fn(*args, **kwargs)
+            try:
+                result, stat = fn(*args, **kwargs)
+                meta["failed"] = False
+            except Exception as e:
+                meta["failed"] = True
+                meta["exception"] = str(e)
+                logger.exception(e)
+                stat = None
+                result = None
+                
             meta["parsing_ended"] = datetime.datetime.now().strftime(time_fmt)
             meta["stat"] = stat
             meta["website"] = website
