@@ -110,7 +110,10 @@ def dump_result_and_meta_s3(Bucket: str, base_dir: str, result: str, meta: dict)
     load_to_s3(
         meta, Key=os.path.join(dirname, "meta.html"), Bucket=Bucket, is_json=True
     )
-    load_to_s3(result, Key=os.path.join(dirname, "content.json"), Bucket=Bucket)
+    if result is not None:
+        load_to_s3(result, Key=os.path.join(dirname, "content.json"), Bucket=Bucket)
+    else:
+        logger.info("Null result, not dumping to s3")
 
 
 from itertools import product
