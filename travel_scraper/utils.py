@@ -108,10 +108,10 @@ def dump_result_and_meta_s3(Bucket: str, base_dir: str, result: str, meta: dict)
     parsing_id = meta["parsing_id"]
     dirname = os.path.join(base_dir, parsing_id)
     load_to_s3(
-        meta, Key=os.path.join(dirname, "meta.html"), Bucket=Bucket, is_json=True
+        meta, Key=os.path.join(dirname, "meta.json"), Bucket=Bucket, is_json=True
     )
     if result is not None:
-        load_to_s3(result, Key=os.path.join(dirname, "content.json"), Bucket=Bucket)
+        load_to_s3(result, Key=os.path.join(dirname, "content.html"), Bucket=Bucket)
     else:
         logger.info("Null result, not dumping to s3")
 
