@@ -55,7 +55,7 @@ def run_selenium(config_path: str, parser: str):
 
     for param in grid_fn(parser_config["parsing"], **parser_config["parsing_params"]):
         result, meta = parse_func(browser, debug=debug_option, **param)
-        meta["global_uuid"] = global_uuid
+        meta["global_id"] = global_uuid
 
         logger.info("Dumping to s3")
         dump_result_and_meta_s3(
