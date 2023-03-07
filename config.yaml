@@ -1,7 +1,7 @@
 options:
  - "window-size=1920,1080"
  - "--headless"
-debug: true
+debug: false
 log_folder: /tmp/logs
 parsers:
   travelata:
@@ -20,3 +20,27 @@ parsers:
         - 6
         - 7
         - 8
+  leveltravel:
+    s3_options:
+      Bucket: parsing
+      base_dir: parsing_data/leveltravel
+    parsing_params: {}
+    parsing:
+      param:
+        - 0
+  teztour:
+    s3_options:
+      Bucket: parsing
+      base_dir: parsing_data/teztour
+    parsing_params:
+      night_interval: 0
+    parsing:
+      nights:
+        - 5
+        - 6
+        - 7
+        - 8
+      country_id:
+        - 7067149
+        - 12695
+        - 5732

@@ -65,4 +65,8 @@ def run_selenium(config_path: str, parser: str):
             meta=meta,
         )
 
+        # dump_result_and_meta(
+        #     "result", result, meta
+        # )
+
     logger.info("End!")
