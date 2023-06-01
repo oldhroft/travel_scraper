@@ -86,7 +86,8 @@ source secrets.sh
 ```python
 @add_meta("https://website.co")
 def parse_with_params(browser: webdriver.Chrome, *, country_code: str, nights: str, debug: bool = False):
-    pass
+    some_stat = {"url": "final_url.com"}
+    return browser.page_source, some_stat
 ```
 
 browser - инстанс браузера селениума (он же иногда называется driver)
@@ -96,6 +97,9 @@ country_code: str, nights: str - параметры парсинга
 
 debug: bool - переменная, которая отвечает за режим дебага. Обычно в таком режиме браузер никуда не скроллит, просто выполняет какие-то минимальные действия, чтобы убедиться, что все работает
 
+browser.page_source - собственно самая HTML-страница
+
+some_stat - словарь с любой информацией дополнительной, которую хочется сохранить. Рекомендую сохранять туда отформатированную url, по которой выполнялся запрос
 
 Второе, что нужно добавить в файл - функция grid_option - которая превращает параметры из конфигурации в grid_option
 
