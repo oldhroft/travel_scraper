@@ -44,3 +44,19 @@ parsers:
         - 7067149
         - 12695
         - 5732
+  tutu:
+    s3_options:
+      Bucket: parsing
+      base_dir: parsing_data/tutu
+    parsing_params:
+      night_interval: 0
+    parsing:
+      nights:
+        - 5
+        - 6
+        - 7
+        - 8
+      country_id:
+        - 7067149
+        - 12695
+        - 5732

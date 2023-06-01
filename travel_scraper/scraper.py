@@ -28,7 +28,7 @@ def get_method(module_name, func_name):
 @click.option(
     "--config_path", help="Path to config", type=click.STRING, default="config.yaml"
 )
-@click.option("--parser", help="Parser", type=click.STRING, default="travelata")
+@click.option("--parser", help="Parser", type=click.STRING, default="teztour")
 def run_selenium(config_path: str, parser: str):
     with open(config_path, "r", encoding="utf-8") as file:
         config = yaml.safe_load(file)
