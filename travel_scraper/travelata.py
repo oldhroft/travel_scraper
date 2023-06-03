@@ -30,7 +30,7 @@ def parse_with_params(
     night_from: int,
     night_to: int,
     debug: bool = False,
-    sleep_between_scroll : int = 3,
+    sleep_between_scroll: int = 3,
     sleep_between_click: float = 0.2
 ) -> None:
     # TODO unify for different parsers
