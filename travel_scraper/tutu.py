@@ -7,7 +7,7 @@ from travel_scraper.utils import add_meta, create_grid
 
 logger = logging.getLogger()
 
-TEMPLATE_URL = ('https://tours.tutu.ru/hot_tours/?departure={departure_country_id}&'
+TEMPLATE_URL = ('https://tours.tutu.ru/hot_tours/?departure=491&'
                 'arrival_id={arrival_country_id}&arrival_type=country&date_begin={date_begin}&'
                 'date_end={date_end}&nights_min={min_nights}&nights_max={max_nights}&'
                 'adults={adults}&children={children}&isArrivalIsHome=false&search=1&'
@@ -18,15 +18,15 @@ TEMPLATE_URL = ('https://tours.tutu.ru/hot_tours/?departure={departure_country_i
 def parse_with_params(
         browser: webdriver.Chrome,
         *,
-        departure_country_id,
         arrival_country_id,
-        adults,
-        children,
+        departure_country_id,
         min_nights,
         max_nights,
+        adults,
+        children,
         times_scrolled,
         debug=False,
-        sleep_between_scroll: int = 2,
+        sleep_between_scroll: int = 5,
 ):
     stat = {}
     fmt = "%d.%m.%Y"
@@ -62,7 +62,7 @@ def parse_with_params(
     # main scrapping loop
     for _ in range(times_scrolled):
         try:
-            next_button_element = browser.find_elements_by_xpath("//*[contains(text(), 'Показать больше предложений')]")[2]
+            next_button_element = browser.find_elements("xpath", "//*[contains(text(), 'Показать больше предложений')]")[2]
             browser.execute_script("arguments[0].scrollIntoView();", next_button_element)
             webdriver.ActionChains(browser).move_to_element(next_button_element).click(next_button_element).perform()
         except Exception as e:
@@ -77,6 +77,23 @@ def parse_with_params(
     return content, {"url": url}
 
 
-def grid_option(grid_config: dict) -> list:
+def grid_option(grid_config: dict, night_interval: int = 0) -> list:
+    if night_interval < 0:
+        raise ValueError("Night interval should be > 0")
+
     grid = create_grid(grid_config)
-    return grid
+
+    return list(
+        map(
+            lambda x: {
+                "departure_country_id": x["departure_country_id"],
+                "arrival_country_id": x["arrival_country_id"],
+                "adults": x["adults"],
+                "children": x["children"],
+                "min_nights": x["nights"],
+                "max_nights": x["nights"] + night_interval,
+                "times_scrolled": x["times_scrolled"],
+            },
+            grid,
+        )
+    )
