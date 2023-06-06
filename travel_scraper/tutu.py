@@ -57,7 +57,7 @@ def parse_with_params(
     if debug:
         logger.info("Debug mode -> exiting -> downloading page source")
         content = browser.page_source
-        return content, {"url": url}
+        return content, stat
 
     # main scrapping loop
     for _ in range(times_scrolled):
@@ -74,7 +74,7 @@ def parse_with_params(
 
     logger.info("Downloading page source")
     content = browser.page_source
-    return content, {"url": url}
+    return content, stat
 
 
 def grid_option(grid_config: dict, night_interval: int = 0) -> list:
