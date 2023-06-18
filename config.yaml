@@ -44,3 +44,28 @@ parsers:
         - 7067149
         - 12695
         - 5732
+  tutu:
+    s3_options:
+      Bucket: parsing
+      base_dir: parsing_data/tutu
+    parsing_params:
+      night_interval: 0
+    parsing:
+      departure_country_id:
+        - 491 # Москва
+      arrival_country_id:
+        - 197 # Турция
+        - 145 # ОАЭ
+        - 188 # Таиланд
+        - 72 # Египет
+      nights:
+        - 5
+        - 6
+        - 7
+        - 8
+      adults:
+        - 2 # Amount of adult clients for tour
+      children:
+        - 0 # Amount of children for tour
+      times_scrolled:
+        - 50 # each scroll = 11 hotels

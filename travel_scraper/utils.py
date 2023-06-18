@@ -53,7 +53,7 @@ import json
 
 def safe_mkdir(path: str):
     if not os.path.exists(path):
-        os.mkdir(path)
+        os.makedirs(path)
 
 
 def dump_json(data: list, path: str):
