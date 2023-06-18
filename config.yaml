@@ -50,6 +50,9 @@ parsers:
       base_dir: parsing_data/tutu
     parsing_params:
       night_interval: 0
+      days_from: 2
+      days_to: 30
+      times_scrolled: 2 # each scroll = 11 hotels
     parsing:
       departure_country_id:
         - 491 # Москва
@@ -67,5 +70,3 @@ parsers:
         - 2 # Amount of adult clients for tour
       children:
         - 0 # Amount of children for tour
-      times_scrolled:
-        - 50 # each scroll = 11 hotels
