@@ -10,3 +10,4 @@ logs
 webserver_config.py
 secrets.sh
 *.txt
+.idea/
