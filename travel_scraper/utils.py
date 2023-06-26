@@ -32,11 +32,12 @@ def add_meta(website: str, time_fmt: str = "%Y-%m-%dT%H:%M:%SZ") -> Callable:
                 logger.exception(e)
                 stat = None
                 result = None
-                
+
             meta["parsing_ended"] = datetime.datetime.now().strftime(time_fmt)
             meta["stat"] = stat
             meta["website"] = website
             meta["parsing_id"] = str(uuid.uuid4())
+            logger.info(f"Parsing id generated {meta['parsing_id']}")
             if "browser" in kwargs:
                 kwargs.pop("browser")
             meta["func_args"] = kwargs
@@ -145,10 +146,11 @@ def config_logger(logger, name: str, folder: str) -> None:
     logger.addHandler(file_handler)
     logger.setLevel(logging.INFO)
 
+
 import time
 
-def infinite_scroll(browser, sleep_between_scroll, delta=0.25):
 
+def infinite_scroll(browser, sleep_between_scroll, delta=0.25):
     logger.info("Scrolling")
     old_height = 0
     delta = delta * browser.execute_script("return document.body.scrollHeight")
@@ -178,8 +180,10 @@ def infinite_scroll(browser, sleep_between_scroll, delta=0.25):
         else:
             old_height = new_height
 
+
 def scroll_bottom(browser: webdriver.Chrome):
     browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
 
 def return_height(browser: webdriver.Chrome):
     return browser.execute_script("return document.body.scrollHeight")
