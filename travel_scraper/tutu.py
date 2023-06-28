@@ -3,7 +3,12 @@ import logging
 import datetime
 
 from selenium import webdriver
+from contextlib import suppress
+from selenium.webdriver.common.by import By
 from travel_scraper.utils import add_meta, create_grid
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementNotInteractableException
 
 logger = logging.getLogger()
@@ -50,31 +55,32 @@ def parse_with_params(
     stat["date_begin"] = date_begin
     stat["date_end"] = date_end
 
-    browser.get(url)
-    time.sleep(5)
+    browser.set_page_load_timeout(20)
+    try:
+        browser.get(url)
+    except TimeoutException:
+        logger.warning(f"Timeout threshold exceeded -> skipping scrolling phase -> saving html")
+        logger.info("Downloading page source")
+        return browser.page_source, stat
 
-    if debug:
-        logger.info("Debug mode -> exiting -> downloading page source")
-        content = browser.page_source
-        return content, stat
-
-    one_link_counter = 0
     loop_counter = 0
+    one_link_counter = 0
+    css_next_button_tuple = (By.CSS_SELECTOR, ".name.b-button__name")
 
     # main scrolling loop
     while one_link_counter < times_scrolled:
         try:
-            time.sleep(2)
-            next_button_element = browser.find_elements("xpath", "//*[contains(text(), 'Показать больше предложений')]")[2]
+            WebDriverWait(browser, 5).until(EC.presence_of_element_located(css_next_button_tuple))
+            next_button_element = browser.find_element(*css_next_button_tuple)
             browser.execute_script("arguments[0].scrollIntoView();", next_button_element)
+            time.sleep(1)
             webdriver.ActionChains(browser).move_to_element(next_button_element).click(next_button_element).perform()
 
             logger.info("Successful iteration -> sleeping between scroll")
             time.sleep(sleep_between_scroll)
         except Exception as e:
-            if type(e) == ElementNotInteractableException or type(e) == IndexError:
+            if type(e) in [ElementNotInteractableException, TimeoutException]:
                 one_link_counter -= 1
-                time.sleep(5)
                 pass
             else:
                 logger.error(f"Scrolling loop exception: {e}")
