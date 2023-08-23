@@ -69,5 +69,6 @@ def run_selenium(config_path: str, parser: str):
         #     "result", result, meta
         # )
     
+    browser.close()
     browser.quit()
     logger.info("End!")
